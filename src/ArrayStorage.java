@@ -27,6 +27,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        return size;
+        return 0;
     }
 }
