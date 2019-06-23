@@ -7,19 +7,8 @@ import com.tebr.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstactArrayStorage {
 
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index >= 0) {//если есть такой элемент if (getIndex(r.getUuid()) != -1)
-            System.out.println("already exist " + r.getUuid());
-        } else if (size == STORAGE_LIMIT) {
-            System.out.println("storage overflow");
-        } else {
-            storage[size] = r;
-            size++;
-        }
-    }
-
     // проверяем наличие элемента в массиве
+    @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
@@ -27,5 +16,15 @@ public class ArrayStorage extends AbstactArrayStorage {
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void insertElement(Resume r, int index) {
+        storage[size] = r;
+    }
+
+    @Override
+    protected void fillDeletedElement(int index) {
+        storage[index] = storage[size-1];
     }
 }

@@ -1,5 +1,8 @@
 package com.tebr.webapp.storage;
 
+import com.tebr.webapp.exceptions.ExistStorageException;
+import com.tebr.webapp.exceptions.NotExistStorageException;
+import com.tebr.webapp.exceptions.StorageException;
 import com.tebr.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -18,13 +21,25 @@ public abstract class AbstactArrayStorage implements Storage {
         size = 0;
     }
 
+    public void save(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (index >= 0) {//если есть такой элемент if (getIndex(r.getUuid()) != -1)
+            throw new ExistStorageException(r.getUuid());
+        } else if (size == STORAGE_LIMIT) {
+            throw new StorageException("storage overflow", r.getUuid());
+        } else {
+            insertElement(r, index); //storage[size] = r;
+            size++;
+        }
+    }
+
     public void update(Resume r) {
         int index = getIndex(r.getUuid());
         if (index >= 0) {//если есть такой элемент if (index != -1)
             storage[index] = r;
             System.out.println("update " + r.getUuid());
         } else {
-            System.out.println("not update resume " + r.getUuid() + " not found");
+            throw new ExistStorageException(r.getUuid());
         }
     }
 
@@ -33,19 +48,17 @@ public abstract class AbstactArrayStorage implements Storage {
         if (index >= 0) {//если есть такой элемент if (index != -1)
             return storage[index];
         }
-        System.out.println("resume " + uuid + " not found");
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index >= 0) {//если есть такой элемент if (index != -1)
-            for (int k = index; k < size; k++) {
-                storage[k] = storage[k + 1];
-            }
+            fillDeletedElement(index);
+            storage[size - 1] = null;
             size--;
         } else {
-            System.out.println("not delete resume " + uuid + " not found");
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -62,5 +75,9 @@ public abstract class AbstactArrayStorage implements Storage {
 
     // проверяем наличие элемента в массиве
     protected abstract int getIndex(String uuid);
+
+    protected abstract void insertElement(Resume r, int index);
+
+    protected abstract void fillDeletedElement(int index);
 
 }
