@@ -5,11 +5,11 @@ import com.tebr.webapp.model.Resume;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage extends AbstactArrayStorage {
+public class ArrayStorage extends AbstractArrayStorage {
 
     // проверяем наличие элемента в массиве
     @Override
-    protected int getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;

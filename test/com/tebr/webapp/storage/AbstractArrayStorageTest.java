@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AbstactArrayStorageTest {
+public class AbstractArrayStorageTest {
     private Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -26,7 +26,7 @@ public class AbstactArrayStorageTest {
     private static final String UUID_4 = "uuid4";
     private static final Resume RESUME_4 = new Resume(UUID_4);
 
-    protected AbstactArrayStorageTest(Storage storage) {
+    protected AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
     }
 
@@ -37,7 +37,6 @@ public class AbstactArrayStorageTest {
         storage.save(RESUME_1);
         storage.save(RESUME_2);
         storage.save(RESUME_3);
-
     }
 
     @Test
@@ -65,7 +64,8 @@ public class AbstactArrayStorageTest {
         assertTrue(newResume == storage.get(UUID_1));
     }
 
-    @Test(expected = ExistStorageException.class)
+//    @Test(expected = ExistStorageException.class)
+    @Test(expected = NotExistStorageException.class)
     public void updateNotExist() throws Exception {
 //        Resume newResume = new Resume("dummy");
         storage.update(RESUME_4);
@@ -115,7 +115,7 @@ public class AbstactArrayStorageTest {
     @Test(expected = StorageException.class)
     public void saveOverflow() throws Exception {
         try {
-            for (int i = 4; i <= AbstactArrayStorage.STORAGE_LIMIT; i++) {
+            for (int i = 4; i <= AbstractArrayStorage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
